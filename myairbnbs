@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include <stdbool.h>
+#define NUM_TWO_BEDROOMS 2
+#define NUM_ONE_BEDROOMS 2
+#define NUM_STUDIOS 2
+typedef struct {
+    int room_type;
+    int room_num;
+    int start_day;
+    int end_day;
+    int num_guests;
+    int phone_number;
+    char email_address;
+    char name;
+    float price;
+
+} Booking;
+bool bedrooms[NUM_TWO_BEDROOMS] = { true, true };
+bool one_bedrooms[NUM_ONE_BEDROOMS] = { true, true };
+bool studios[NUM_STUDIOS] = { true, true };
+void display_available_rooms() {
+    printf("Available rooms:\n");
+    for (int i = 0; i < NUM_TWO_BEDROOMS; i++) {
+        if (bedrooms[i]) {
+            printf("Bedroom %d\n", i+1);
+        }
+    }
+    for (int i = 0; i < NUM_ONE_BEDROOMS; i++) {
+        if (one_bedrooms[i]) {
+            printf("One-Bedroom %d\n", i+1);
+        }
+    }
+    for (int i = 0; i < NUM_STUDIOS; i++) {
+        if (studios[i]) {
+            printf("Studio %d\n", i+1);
+        }
+    }
+
+}
+Booking book_room(int room_type, int room_num, int start_day, int end_day, int num_guests) {
+    Booking booking;
+    booking.room_type = room_type;
+    booking.room_num = room_num;
+    booking.start_day = start_day;
+    booking.end_day = end_day;
+    booking.num_guests = num_guests;
+    switch (room_type) {
+        case 1: // bedroom
+            booking.price = 2000.0 * (end_day - start_day + 1);
+            bedrooms[room_num-1] = false;
+            break;
+        case 2: // one-bedroom
+            booking.price = 1500.0 * (end_day - start_day + 1);
+            one_bedrooms[room_num-1] = false;
+            break;
+        case 3: // studio
+            booking.price = 1000.0 * (end_day - start_day + 1);
+            studios[room_num-1] = false;
+            break;
+        default:
+            printf("Invalid room type.\n");
+            break;
+    }
+    return booking;
+}
+int main() {
+    int choice;
+    do {
+        printf("\nMain Menu\n");
+        printf("1. Display available rooms\n");
+        printf("2. Book a room\n");
+        printf("4. Quit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+         switch (choice) {
+        case 1:
+            display_available_rooms();
+            break;
+        case 2: {
+            int room_type, room_num, start_day, end_day, num_guests;
+            printf("Enter room type (1 = bedroom, 2 = one-bedroom, 3 = studio): ");
+            scanf("%d", &room_type);
+            if (room_type < 1 || room_type > 3)
+                {
+                printf("Invalid room type.\n");
+                break;
+
+            }
+            switch (room_type) {
+                case 1:
+                    printf("Enter bedroom number (1 to %d): ", NUM_TWO_BEDROOMS);
+                    scanf("%d", &room_num);
+                    if (room_num < 1 || room_num > NUM_TWO_BEDROOMS) {
+                        printf("Invalid bedroom number.\n");
+                        break;
+                    }
+                    break;
+                case 2:
+                    printf("Enter one-bedroom number (1 to %d): ", NUM_ONE_BEDROOMS);
+                    scanf("%d", &room_num);
+                    if (room_num < 1 || room_num > NUM_ONE_BEDROOMS) {
+                        printf("Invalid one-bedroom number.\n");
+                        break;
+                    }
+                    break;
+                case 3:
+                    printf("Enter studio number (1 to %d): ", NUM_STUDIOS);
+                    scanf("%d", &room_num);
+                    if (room_num < 1 || room_num > NUM_STUDIOS) {
+                        printf("Invalid studio number.\n");
+                        break;
+                    }
+                    break;
+            }
+            printf("Enter start day (1 to 31): ");
+            scanf("%d", &start_day);
+            printf("Enter end day (1 to 31): ");
+            scanf("%d", &end_day);
+            if (start_day < 1 || start_day > 31 || end_day < 1 || end_day > 31 || end_day < start_day) {
+                printf("Invalid dates.\n");
+                break;
+            }
+            printf("Enter number of guests (1 to 4): ");
+            scanf("%d", &num_guests);
+            if (num_guests < 1 || num_guests > 4) {
+                printf("Invalid number of guests.\n");
+                break;
+            }
+            Booking booking = book_room(room_type, room_num, start_day, end_day, num_guests);
+            printf("Booking successful. Total price: KES %.2f.\n", booking.price);
+            break;
+
+        }
+        case 4:
+            printf("Goodbye!\n");
+            break;
+        default:
+            printf("Invalid choice.\n");
+            break;
+    }
+} while (choice != 3);
+
+return 0;
+}
